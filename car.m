@@ -14,12 +14,7 @@ classdef car < matlab.mixin.SetGet
             obj.direction_out = out; 
             disp('We have created a car');    
 
-        end
-        
-        
-    end
-    
-    
-    
+        end 
+    end    
 end
 

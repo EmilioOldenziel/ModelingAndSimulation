@@ -9,8 +9,7 @@ classdef traffic_light  < matlab.mixin.SetGet
     end
     
     methods
-        function obj = traffic_light(pos, state, queue)
-            obj.pos = pos; 
+        function obj = traffic_light(state, queue)
             obj.state = state; 
             obj.queue = queue; 
             fprintf('We have created a traffic light %d\n', obj.pos);   
