@@ -9,14 +9,15 @@ classdef traffic_light  < matlab.mixin.SetGet
     end
     
     methods
-        function obj = traffic_light(pos, state, queue)
+        
+        function obj = traffic_light(pos, state, queue)  %constructor of traffic light
             obj.pos = pos; 
             obj.state = state; 
             obj.queue = queue; 
             fprintf('We have created a traffic light %d\n', obj.pos);   
         end
         
-        function enqueue(light, car)
+        function enqueue(light, car) %enqueues a car to a particular traffic light
             light.queue = [get(light, 'queue'); get(car, 'direction_in'), get(car, 'direction_out')];
         end
     end
