@@ -18,4 +18,3 @@ classdef car < matlab.mixin.SetGet
         end 
     end
 end
-

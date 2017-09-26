@@ -17,6 +17,10 @@ classdef traffic_light  < matlab.mixin.SetGet
         function enqueue(light, car) %enqueues a car to a particular traffic light
             light.queue = [get(light, 'queue'); get(car, 'direction_in'), get(car, 'direction_out')];
         end
+        
+        function green()
+            set()
+        end
     end
     
 end
