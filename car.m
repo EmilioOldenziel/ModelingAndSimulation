@@ -1,20 +1,19 @@
-classdef car < matlab.mixin.SetGet
+classdef car
     %UNTITLED Summary of this class goes here
     %   Detailed explanation goes here
     
     properties
     direction_in %coming direction
     direction_out %heading direction
-        
+    time_of_arrival %time when the car is enqueued to a particular trafic light
+    time_of_passing %time when the car passed the traffic light
     end
     
     methods
         function obj = car(in, out) %constructor of car
-            if nargin > 0
-                obj.direction_in = in; 
-                obj.direction_out = out; 
-                disp('We have created a car');    
-            end
+            obj.direction_in = in; 
+            obj.direction_out = out; 
+            disp('We have created a car');    
         end 
     end
 end
