@@ -12,18 +12,12 @@ classdef intersection
         function obj = intersection(time)
             %set the simulation runtime and time to 0
             obj.simsec = time;
-            
-            %initialize traffic
-            car1 = car(1, 3);
-            %car2 = car(1, 4); 
-            obj.north = obj.north.enqueue(car1);
-            obj.north = obj.north.dequeue();
-            %obj.north.enqueue(car2);
         end
         
-        function run(time)
-            for i=1:1:time
-                
+        function obj = run(obj)
+            for i=1:1:obj.simsec
+                fprintf('We are in run %d\n', i); 
+                obj = roundRobin(obj, i); 
             end
         end
     end 
