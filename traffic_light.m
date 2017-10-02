@@ -6,42 +6,43 @@ classdef traffic_light
     state %current state (2=green, 1=orange, 0=red)
     queue %queueu of cars in front of light  
     cars_passed %amount of cars that passed the traffic light
+    wait_time %queue with time of waiting
     end
     
     methods
-        function obj = traffic_light(state, queue)
-            obj.state = state; 
-            obj.queue = queue; 
-            fprintf('We have created a traffic light\n');   
+        function obj = traffic_light(state)
+            obj.state = state;
+            obj.queue = []; 
+            obj.cars_passed = 0;
+            obj.wait_time = [];
         end
         
         function obj = enqueue(obj, car, time_now) %enqueues a car to a particular traffic light
             obj.queue = horzcat(obj.queue, car); 
-            car.time_of_arrival = time_now; 
+            car.time_of_arrival = time_now;
         end
         
         function obj = dequeue(obj, time_now)
-            car = obj.queue(1);
-            obj.queue = obj.queue(2:1:end);
-            car.time_passed = time_now;   
+            if(~isempty(obj.queue) && obj.state == 2)
+                car = obj.queue(1);
+                obj.queue = obj.queue(2:1:end);
+                car.time_of_passing = time_now;
+                obj.cars_passed = obj.cars_passed + 1;
+                obj.wait_time = horzcat(obj.wait_time, (car.time_of_passing - car.time_of_arrival));
+            end
         end
         
         function obj = green(obj)
-            if obj.state ~= 0
+            if obj.state ~= 2
                 obj.state = 2;
-            else 
-                print("Already on green!"); 
             end
         end
         
         function obj = red(obj)
-            if obj.state ~= 2
-                obj.state = 0;
-            else 
-                print("Already on red!"); 
+            if obj.state ~= 0
+               obj.state = 0;
             end
         end
-        
     end
     
 end

@@ -13,6 +13,8 @@ classdef car
         function obj = car(in, out) %constructor of car
             obj.direction_in = in; 
             obj.direction_out = out; 
+            obj.time_of_arrival = 0; 
+            obj.time_of_passing = 0; 
         end 
     end
 end

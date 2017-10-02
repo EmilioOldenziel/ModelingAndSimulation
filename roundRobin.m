@@ -1,18 +1,28 @@
 function [ obj ] = roundRobin(obj, i)
-
+    %Divides the turn equally over the traffic lights
     turn = mod(i, 4);
-    direction = randi(4);  
-    switch turn
-        case 1 
-            obj.west = obj.west.enqueue(car(1, direction), i);
-        case 2
-            obj.east = obj.east.enqueue(car(2, direction), i);
-        case 3 
-            obj.south = obj.south.enqueue(car(3, direction), i);
-        otherwise
-            obj.north = obj.north.enqueue(car(0, direction), i);
-    end
-
     
+    switch turn
+        case 1
+            obj.east = obj.east.green(); 
+            obj.south = obj.south.red();  
+            obj.west = obj.west.red(); 
+            obj.north = obj.north.red(); 
+        case 2
+            obj.east = obj.east.red(); 
+            obj.south = obj.south.green();  
+            obj.west = obj.west.red(); 
+            obj.north = obj.north.red(); 
+        case 3
+            obj.east = obj.east.red(); 
+            obj.south = obj.south.red(); 
+            obj.west = obj.west.green(); 
+            obj.north = obj.north.red(); 
+        otherwise 
+            obj.east = obj.east.red(); 
+            obj.south = obj.south.red();  
+            obj.west = obj.west.red(); 
+            obj.north = obj.north.green(); 
+    end
 end
 
