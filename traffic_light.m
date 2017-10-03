@@ -18,8 +18,8 @@ classdef traffic_light
         end
         
         function obj = enqueue(obj, car, time_now) %enqueues a car to a particular traffic light
-            obj.queue = horzcat(obj.queue, car); 
             car.time_of_arrival = time_now;
+            obj.queue = horzcat(obj.queue, car); 
         end
         
         function obj = dequeue(obj, time_now)
