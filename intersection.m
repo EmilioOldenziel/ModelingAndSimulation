@@ -27,9 +27,11 @@ classdef intersection
                 obj.east = obj.east.dequeue(i);
                 obj.south = obj.south.dequeue(i);
                 obj.north = obj.north.dequeue(i);
-                obj.list_avg_waiting_time = horzcat(obj.list_avg_waiting_time, obj.east.cars_passed, obj.south.cars_passed, obj.west.cars_passed, obj.north.cars_passed);  
+                disp(['amount of cars waiting => ','north: ' , num2str(size(obj.north.queue, 2)), ' east: ', num2str(size(obj.east.queue, 2)), ' south: ', num2str(size(obj.south.queue, 2)) ,' west: ', num2str(size(obj.west.queue, 2))])
+                obj.list_avg_waiting_time = horzcat(obj.list_avg_waiting_time, obj.east.wait_times, obj.south.wait_times, obj.west.wait_times, obj.north.wait_times);  
                 y(1,i) = mean(obj.list_avg_waiting_time);
-                scatter(x,y); 
+                disp()
+                plot(x,y); 
                 drawnow;
             end
         end

@@ -6,7 +6,7 @@ classdef traffic_light
     state %current state (2=green, 1=orange, 0=red)
     queue %queueu of cars in front of light  
     cars_passed %amount of cars that passed the traffic light
-    wait_time %queue with time of waiting
+    wait_times %queue with time of waiting
     end
     
     methods
@@ -14,7 +14,7 @@ classdef traffic_light
             obj.state = state;
             obj.queue = []; 
             obj.cars_passed = 0;
-            obj.wait_time = [];
+            obj.wait_times = [];
         end
         
         function obj = enqueue(obj, car, time_now) %enqueues a car to a particular traffic light
@@ -28,7 +28,7 @@ classdef traffic_light
                 obj.queue = obj.queue(2:1:end);
                 car.time_of_passing = time_now;
                 obj.cars_passed = obj.cars_passed + 1;
-                obj.wait_time = horzcat(obj.wait_time, (car.time_of_passing - car.time_of_arrival));
+                obj.wait_times = horzcat(obj.wait_times, (car.time_of_passing - car.time_of_arrival));
             end
         end
         
