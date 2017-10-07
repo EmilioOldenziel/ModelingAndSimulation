@@ -26,16 +26,9 @@ classdef intersection
         function obj = run(obj)
             lock = 0;   %holds the traffic light on green for n steps
             on_green = 0; %current traffic light situation that is on green
+            car_lock_1 = randi(4); %seconds of a car that is driving away
+            car_lock_2 = randi(4);
             y = [];
-            figure 
-            subplot(2,1,1)
-            plot(y);
-            title('Average waiting time of a car'); 
-            drawnow;
-            subplot(2,1,2)
-            plot(length(obj.north.queue_right)); 
-            title('Queue length per direction'); 
-            drawnow;
             for i=1:1:obj.simsec
                 % switch green traffic light situation
                 if lock <= 0 
@@ -57,32 +50,58 @@ classdef intersection
                     end
                 end
                 % add some cars
-                obj = randomScheduling(obj, i);
+                obj = randomScheduling(obj, i, obj.simsec);
                 % let cars pass
                 if lock > 0
-                    switch on_green 
+                    switch on_green
                         case 1 % north-south straight and right light
-                            obj.north = obj.north.green_right(); 
-                            obj.north = obj.north.dequeue_right(i);
-                            obj.south = obj.south.green_right(); 
-                            obj.south = obj.south.dequeue_right(i);
+                            obj.north = obj.north.green_right();
+                            if car_lock_1 == 0 %car drove away
+                                obj.north = obj.north.dequeue_right(i); %next car drives away
+                                car_lock_1 = randi(4); %next car drives away
+                            end
+                            obj.south = obj.south.green_right();
+                            if car_lock_2 == 0
+                                obj.south = obj.south.dequeue_right(i);
+                                car_lock_2 = randi(4);
+                            end
                         case 2 % east-west straight and right light
                             obj.east = obj.east.green_right();
-                            obj.east = obj.east.dequeue_right(i);
+                            if car_lock_1 == 0
+                                obj.east = obj.east.dequeue_right(i);
+                                car_lock_1 = randi(4);
+                            end
                             obj.west = obj.west.green_right();
-                            obj.west= obj.west.dequeue_right(i);
+                            if car_lock_2 == 0
+                                obj.west= obj.west.dequeue_right(i);
+                                car_lock_2 = randi(4);
+                            end
                         case 3 % north-south left light
-                            obj.north = obj.north.green_left(); 
-                            obj.north = obj.north.dequeue_left(i);
-                            obj.south = obj.south.green_left(); 
-                            obj.south = obj.south.dequeue_left(i);
+                            obj.north = obj.north.green_left();
+                            if car_lock_1 == 0
+                                obj.north = obj.north.dequeue_left(i);
+                                car_lock_1 = randi(4);
+                            end
+                            obj.south = obj.south.green_left();
+                            if car_lock_2 == 0
+                                obj.south = obj.south.dequeue_left(i);
+                                car_lock_2 = randi(4);
+                            end
                         otherwise %east-west left light
                             obj.east = obj.east.green_left();
-                            obj.east = obj.east.dequeue_left(i);
+                            if car_lock_1 == 0
+                                obj.east = obj.east.dequeue_left(i);
+                                car_lock_1 = randi(4);
+                            end
                             obj.west = obj.west.green_left();
-                            obj.west = obj.west.dequeue_left(i); 
+                            if car_lock_2 == 0
+                                obj.west = obj.west.dequeue_left(i);
+                                car_lock_2 = randi(4);
+                            end
                     end
                 end
+                car_lock_1 = car_lock_1 - 1;
+                car_lock_2 = car_lock_2 - 1;
                 lock = lock - 1;
                 %  disp(['amount of cars waiting => ','north: ' , num2str(size(obj.north.queue, 2)), ' east: ', num2str(size(obj.east.queue, 2)), ' south: ', num2str(size(obj.south.queue, 2)) ,' west: ', num2str(size(obj.west.queue, 2))])
                 obj.list_avg_waiting_time = horzcat(obj.list_avg_waiting_time, mean([obj.east.wait_times obj.south.wait_times obj.west.wait_times obj.north.wait_times]));  
@@ -97,7 +116,8 @@ classdef intersection
                 x = (1:1:i);
                 y = obj.list_avg_waiting_time;
             end
-                            subplot(2,1,1)
+                figure 
+                subplot(2,1,1)
                 plot(x, y);
                 title('Average waiting time of a car'); 
                 drawnow;
