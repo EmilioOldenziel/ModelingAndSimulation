@@ -28,6 +28,7 @@ classdef intersection
             on_green = 0; %current traffic light situation that is on green
             car_lock_1 = randi(4); %seconds of a car that is driving away
             car_lock_2 = randi(4);
+            time_till_next_enqueue_round = 0;
             y = [];
             for i=1:1:obj.simsec
                 % switch green traffic light situation
@@ -50,7 +51,11 @@ classdef intersection
                     end
                 end
                 % add some cars
-                obj = randomScheduling(obj, i, obj.simsec);
+                if time_till_next_enqueue_round == 0
+                    obj = randomScheduling(obj, i, obj.simsec);
+                    time_till_next_enqueue_round = 5 + randi(10);
+                end
+                time_till_next_enqueue_round = time_till_next_enqueue_round - 1;
                 % let cars pass
                 if lock > 0
                     switch on_green
@@ -58,23 +63,23 @@ classdef intersection
                             obj.north = obj.north.green_right();
                             if car_lock_1 == 0 %car drove away
                                 obj.north = obj.north.dequeue_right(i); %next car drives away
-                                car_lock_1 = randi(4); %next car drives away
+                                car_lock_1 = 2 + randi(2); %next car drives away
                             end
                             obj.south = obj.south.green_right();
                             if car_lock_2 == 0
                                 obj.south = obj.south.dequeue_right(i);
-                                car_lock_2 = randi(4);
+                                car_lock_2 = 2 + randi(2);
                             end
                         case 2 % east-west straight and right light
                             obj.east = obj.east.green_right();
                             if car_lock_1 == 0
                                 obj.east = obj.east.dequeue_right(i);
-                                car_lock_1 = randi(4);
+                                car_lock_1 = 2 + randi(2);
                             end
                             obj.west = obj.west.green_right();
                             if car_lock_2 == 0
                                 obj.west= obj.west.dequeue_right(i);
-                                car_lock_2 = randi(4);
+                                car_lock_2 = 2 + randi(2);
                             end
                         case 3 % north-south left light
                             obj.north = obj.north.green_left();

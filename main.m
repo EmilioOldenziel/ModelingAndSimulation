@@ -1,2 +1,2 @@
-inter = intersection(5000);
+inter = intersection(1000);
 inter = inter.run(); 

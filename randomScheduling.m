@@ -1,5 +1,5 @@
 function [ obj, amount_of_cars ] = randomScheduling(obj, i, simsec)
-    amount_of_cars = randi(3); %abs(((-abs((simsec/4)-i))+simsec/4)*(0.01));
+    amount_of_cars = randi(5);
     for s=1:1:amount_of_cars
         %Randomly creates cars in front of the traffic lights
         start = randi(8); 
