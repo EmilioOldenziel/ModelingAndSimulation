@@ -74,8 +74,6 @@ classdef traffic_light
         end
         
         function waiting_time = get_longest_waiting_time_right(obj)
-          
-                
             minlist = []; 
             length = size(obj.queue_right, 2); 
             for i = 1:1:length
@@ -84,7 +82,7 @@ classdef traffic_light
             end
             waiting_time = min(minlist); 
             if isempty(waiting_time)
-                waiting_time = 0;
+                waiting_time = 1000;
             end   
         end
         
@@ -98,7 +96,7 @@ classdef traffic_light
             end
             waiting_time = min(minlist); 
             if isempty(waiting_time)
-                waiting_time = 0;
+                waiting_time = 1000;
             end  
         end
     end

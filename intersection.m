@@ -1,6 +1,7 @@
 classdef intersection
     %intersection of 2 two-way roads with trafficlights
     properties
+        index;
         north = traffic_light(0);
         east = traffic_light(0);
         south = traffic_light(0);
@@ -16,12 +17,14 @@ classdef intersection
         size_of_queue_west_left = [];
         size_of_queue_west_right = []; 
         amount_of_cars = []; 
+        longest_waiting = []; 
     end
 
     methods
-        function obj = intersection(time)
+        function obj = intersection(time, idx)
             %set the simulation runtime and time to 0
             obj.simsec = time;
+            obj.index = idx; 
         end
         
         function obj = run(obj)
@@ -40,7 +43,10 @@ classdef intersection
                         min(obj.north.get_longest_waiting_time_left(), obj.south.get_longest_waiting_time_left()) ...   % north-south left turns
                         min(obj.east.get_longest_waiting_time_left(), obj.west.get_longest_waiting_time_left()) ...     % east-west left turns
                         ];
+                    
                     waiting_times = waiting_times / max(waiting_times);
+                    waiting_times = 1-waiting_times;
+                  
                     
                     [~, on_green] = max([...
                         ((size(obj.north.queue_right, 2)+size(obj.south.queue_right, 2))*waiting_times(1)) ... % north-south straight and right turns
@@ -60,6 +66,14 @@ classdef intersection
                             lock = max(size(obj.east.queue_left, 2), size(obj.west.queue_left, 2));
                     end
                 end
+                waiting_times = [...
+                        min(obj.north.get_longest_waiting_time_right(), obj.south.get_longest_waiting_time_right()) ... % north-south straight and right turns
+                        min(obj.east.get_longest_waiting_time_right(), obj.west.get_longest_waiting_time_right()) ...   % east-west straight and right turns
+                        min(obj.north.get_longest_waiting_time_left(), obj.south.get_longest_waiting_time_left()) ...   % north-south left turns
+                        min(obj.east.get_longest_waiting_time_left(), obj.west.get_longest_waiting_time_left()) ...     % east-west left turns
+                        ];
+                    obj.longest_waiting = [obj.longest_waiting (i-min(waiting_times))];
+                
                 % add some cars
                 if time_till_next_enqueue_round == 0
                     obj = randomScheduling(obj, i, obj.simsec);
@@ -145,18 +159,25 @@ classdef intersection
                 figure 
                 
                 y = obj.amount_of_cars; 
-                subplot(3,1,1)
+                subplot(4,1,1)
                 plot(x, y);
                 title('Card added'); 
                 drawnow;
                 
                 y = obj.list_avg_waiting_time;
-                subplot(3,1,2)
+                subplot(4,1,2)
                 plot(x, y);
                 title('Average waiting time of a car'); 
                 drawnow;
 
-                subplot(3,1,3)
+                y = obj.longest_waiting;
+                
+                subplot(4,1,3)
+                plot(x, y);
+                title('Max waiting time per round'); 
+                drawnow;
+                
+                subplot(4,1,4)
                 plot(x, obj.size_of_queue_north_right); 
                 hold on
                 plot(x, obj.size_of_queue_north_left); 
