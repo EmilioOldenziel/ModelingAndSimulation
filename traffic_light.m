@@ -39,7 +39,7 @@ classdef traffic_light
             end
         end
         
-                function obj = dequeue_right(obj, time_now)
+        function obj = dequeue_right(obj, time_now)
             if(~isempty(obj.queue_right) && obj.state == 2)
                 car = obj.queue_right(1);
                 obj.queue_right = obj.queue_right(2:1:end);
@@ -71,6 +71,35 @@ classdef traffic_light
             if obj.state ~= 0
                obj.state = 0;
             end
+        end
+        
+        function waiting_time = get_longest_waiting_time_right(obj)
+          
+                
+            minlist = []; 
+            length = size(obj.queue_right, 2); 
+            for i = 1:1:length
+                car = obj.queue_right(i); 
+                minlist = [minlist car.time_of_arrival] ;
+            end
+            waiting_time = min(minlist); 
+            if isempty(waiting_time)
+                waiting_time = 0;
+            end   
+        end
+        
+       
+        function waiting_time = get_longest_waiting_time_left(obj)
+            minlist = []; 
+            length = size(obj.queue_left, 2); 
+            for i = 1:1:length
+                car = obj.queue_left(i); 
+                minlist = [minlist car.time_of_arrival]; 
+            end
+            waiting_time = min(minlist); 
+            if isempty(waiting_time)
+                waiting_time = 0;
+            end  
         end
     end
     
