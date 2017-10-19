@@ -73,31 +73,33 @@ classdef traffic_light
             end
         end
         
-        function waiting_time = get_longest_waiting_time_right(obj)
+        function waiting_time = get_longest_waiting_time_right(obj, t)
             minlist = []; 
             length = size(obj.queue_right, 2); 
-            for i = 1:1:length
-                car = obj.queue_right(i); 
-                minlist = [minlist car.time_of_arrival] ;
-            end
-            waiting_time = min(minlist); 
-            if isempty(waiting_time)
-                waiting_time = 1000;
-            end   
+            if length > 0
+                for i = 1:1:length
+                    car = obj.queue_right(i); 
+                    minlist = [minlist (t-car.time_of_arrival)]; 
+                end
+                waiting_time = max(minlist); 
+            else
+                waiting_time = 0;
+            end 
         end
         
        
-        function waiting_time = get_longest_waiting_time_left(obj)
+        function waiting_time = get_longest_waiting_time_left(obj, t)
             minlist = []; 
             length = size(obj.queue_left, 2); 
-            for i = 1:1:length
-                car = obj.queue_left(i); 
-                minlist = [minlist car.time_of_arrival]; 
-            end
-            waiting_time = min(minlist); 
-            if isempty(waiting_time)
-                waiting_time = 1000;
-            end  
+            if length > 0
+                for i = 1:1:length
+                    car = obj.queue_left(i); 
+                    minlist = [minlist (t - car.time_of_arrival)]; 
+                end
+                waiting_time = max(minlist); 
+            else
+                waiting_time = 0;
+            end 
         end
     end
     

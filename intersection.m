@@ -34,27 +34,24 @@ classdef intersection
             car_lock_2 = randi(4);
             time_till_next_enqueue_round = 0;
             for i=1:1:obj.simsec
-                fprintf("%d\n", lock); 
                 % switch green traffic light situation
                 if lock <= 0 && car_lock_1 <= 0 && car_lock_2 <= 0
                     waiting_times = [...
-                        min(obj.north.get_longest_waiting_time_right(), obj.south.get_longest_waiting_time_right()) ... % north-south straight and right turns
-                        min(obj.east.get_longest_waiting_time_right(), obj.west.get_longest_waiting_time_right()) ...   % east-west straight and right turns
-                        min(obj.north.get_longest_waiting_time_left(), obj.south.get_longest_waiting_time_left()) ...   % north-south left turns
-                        min(obj.east.get_longest_waiting_time_left(), obj.west.get_longest_waiting_time_left()) ...     % east-west left turns
+                        max(obj.north.get_longest_waiting_time_right(i), obj.south.get_longest_waiting_time_right(i)) ... % north-south straight and right turns
+                        max(obj.east.get_longest_waiting_time_right(i), obj.west.get_longest_waiting_time_right(i)) ...   % east-west straight and right turns
+                        max(obj.north.get_longest_waiting_time_left(i), obj.south.get_longest_waiting_time_left(i)) ...   % north-south left turns
+                        max(obj.east.get_longest_waiting_time_left(i), obj.west.get_longest_waiting_time_left(i)) ...     % east-west left turns
                         ];
-                    
-                    waiting_times = waiting_times / max(waiting_times);
-                    waiting_times = 1-waiting_times;
-                  
-                    
+                    maximum = max(waiting_times);
+                    for x=1:1:length(waiting_times)
+                        waiting_times(x) = waiting_times(x) / maximum;
+                    end
                     [~, on_green] = max([...
                         ((size(obj.north.queue_right, 2)+size(obj.south.queue_right, 2))*waiting_times(1)) ... % north-south straight and right turns
                         ((size(obj.east.queue_right, 2)+size(obj.west.queue_right, 2))*waiting_times(2)) ...   % east-west straight and right turns
                         ((size(obj.north.queue_left, 2)+size(obj.south.queue_left, 2))*waiting_times(3)) ...   % north-south left turns
                         ((size(obj.east.queue_left, 2)+size(obj.west.queue_left, 2))*waiting_times(4)) ...     % east-west left turns
                     ]);
-                    
                     switch on_green 
                         case 1
                             lock = max(size(obj.north.queue_right, 2), size(obj.south.queue_right, 2)); %longest of the 2
@@ -67,12 +64,12 @@ classdef intersection
                     end
                 end
                 waiting_times = [...
-                        min(obj.north.get_longest_waiting_time_right(), obj.south.get_longest_waiting_time_right()) ... % north-south straight and right turns
-                        min(obj.east.get_longest_waiting_time_right(), obj.west.get_longest_waiting_time_right()) ...   % east-west straight and right turns
-                        min(obj.north.get_longest_waiting_time_left(), obj.south.get_longest_waiting_time_left()) ...   % north-south left turns
-                        min(obj.east.get_longest_waiting_time_left(), obj.west.get_longest_waiting_time_left()) ...     % east-west left turns
+                        max(obj.north.get_longest_waiting_time_right(i), obj.south.get_longest_waiting_time_right(i)) ... % north-south straight and right turns
+                        max(obj.east.get_longest_waiting_time_right(i), obj.west.get_longest_waiting_time_right(i)) ...   % east-west straight and right turns
+                        max(obj.north.get_longest_waiting_time_left(i), obj.south.get_longest_waiting_time_left(i)) ...   % north-south left turns
+                        max(obj.east.get_longest_waiting_time_left(i), obj.west.get_longest_waiting_time_left(i)) ...     % east-west left turns
                         ];
-                    obj.longest_waiting = [obj.longest_waiting (i-min(waiting_times))];
+                    obj.longest_waiting = [obj.longest_waiting (max(waiting_times))];
                 
                 % add some cars
                 if time_till_next_enqueue_round == 0
