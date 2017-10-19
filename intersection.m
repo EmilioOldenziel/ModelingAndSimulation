@@ -1,7 +1,6 @@
 classdef intersection
     %intersection of 2 two-way roads with trafficlights
     properties
-        index;
         north = traffic_light(0);
         east = traffic_light(0);
         south = traffic_light(0);
@@ -21,10 +20,9 @@ classdef intersection
     end
 
     methods
-        function obj = intersection(time, idx)
+        function obj = intersection(time)
             %set the simulation runtime and time to 0
             obj.simsec = time;
-            obj.index = idx; 
         end
         
         function obj = run(obj)
