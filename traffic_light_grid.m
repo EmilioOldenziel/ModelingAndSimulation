@@ -8,12 +8,13 @@ classdef traffic_light_grid
       cars_to_enqueue = []
       enqueue_rate = 1;
       grid_amount_of_cars = {};
-      simsec = 100;
+      simsec = 100; %default 
     end
     
     methods
-        function obj = traffic_light_grid(size)
+        function obj = traffic_light_grid(size, simsec)
             obj.grid_size = size; 
+            obj.simsec = simsec
             for i = 1:1:obj.grid_size
                 for j = 1:1:obj.grid_size
                     obj.grid{i,j} = intersection();
@@ -91,12 +92,12 @@ classdef traffic_light_grid
                     Z{i,j} = obj.grid_amount_of_cars{i,j};
                 end
               end
-              bar3(cell2mat(Z))
-              alpha(.5)
-              title('Amount of Cars')
+              bar3(cell2mat(Z));
+              alpha(.5);
+              title('Amount of Cars');
               title(['Amount of cars at t=', num2str(t)]);
               drawnow;
-              pause(0.01)
+              saveas(gcf,['frames/' num2str(t) '.jpg']);
             end
                
             
