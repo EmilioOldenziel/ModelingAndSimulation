@@ -1,5 +1,24 @@
 function [ obj] = randomScheduling(obj, i)
-     amount_of_cars = abs(int16((sin((i+obj.simsec/4)/obj.simsec*pi))*10.0));
+    
+    switch obj.input_type
+        case 1 
+            %settings for an constant input
+            amount_of_cars=1; 
+        case 2
+            %settings for a rush hour situation
+            amount_of_cars = abs(int16((sin(i/obj.simsec*pi*10))*10.0)); 
+            %add no more cars after half a sinus
+            if i > obj.simsec/10
+                amount_of_cars = 0;
+            end
+        otherwise
+            %settings for constant peaks
+            if mod(i, 5) == 0
+                amount_of_cars = 2;
+            else 
+                amount_of_cars = 0;
+            end
+    end
 
     obj.amount_of_cars = [obj.amount_of_cars amount_of_cars]; 
     for s=1:1:amount_of_cars

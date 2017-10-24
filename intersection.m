@@ -6,6 +6,7 @@ classdef intersection
         south = traffic_light(0);
         west = traffic_light(0);
         simsec = 0; %time since start of simulation
+        input_type = 1;
         green_mode = 1;
         lock_mode = 1
         list_avg_waiting_time = [] ;
@@ -22,9 +23,10 @@ classdef intersection
     end
 
     methods
-        function obj = intersection(time, green_mode, lock_mode)
+        function obj = intersection(time, input_type, green_mode, lock_mode)
             %set the simulation runtime and time to 0
             obj.simsec = time;
+            obj.input_type = input_type; 
             obj.green_mode = green_mode; 
             obj.lock_mode = lock_mode;
         end
@@ -118,9 +120,8 @@ classdef intersection
                 
                 % add some cars
                 if time_till_next_enqueue_round == 0
-                    
                     obj = randomScheduling(obj, i);
-                    time_till_next_enqueue_round =  2 + randi(3);
+                    time_till_next_enqueue_round =  1;
                 else 
                     obj.amount_of_cars = [obj.amount_of_cars 0];
                 end
