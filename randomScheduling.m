@@ -1,5 +1,6 @@
-function [ obj] = randomScheduling(obj, i, simsec)
-    amount_of_cars = randi(5);
+function [ obj] = randomScheduling(obj, i)
+     amount_of_cars = abs(int16((sin((i+obj.simsec/4)/obj.simsec*pi))*10.0));
+
     obj.amount_of_cars = [obj.amount_of_cars amount_of_cars]; 
     for s=1:1:amount_of_cars
         %Randomly creates cars in front of the traffic lights

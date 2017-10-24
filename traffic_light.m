@@ -74,14 +74,14 @@ classdef traffic_light
         end
         
         function waiting_time = get_longest_waiting_time_right(obj, t)
-            minlist = []; 
+            waiting_list = []; 
             length = size(obj.queue_right, 2); 
             if length > 0
                 for i = 1:1:length
                     car = obj.queue_right(i); 
-                    minlist = [minlist (t-car.time_of_arrival)]; 
+                    waiting_list = [waiting_list (t-car.time_of_arrival)]; 
                 end
-                waiting_time = max(minlist); 
+                waiting_time = max(waiting_list); 
             else
                 waiting_time = 0;
             end 
@@ -89,17 +89,39 @@ classdef traffic_light
         
        
         function waiting_time = get_longest_waiting_time_left(obj, t)
-            minlist = []; 
+            waiting_list = []; 
             length = size(obj.queue_left, 2); 
             if length > 0
                 for i = 1:1:length
                     car = obj.queue_left(i); 
-                    minlist = [minlist (t - car.time_of_arrival)]; 
+                    waiting_list = [waiting_list (t - car.time_of_arrival)]; 
                 end
-                waiting_time = max(minlist); 
+                waiting_time = max(waiting_list); 
             else
                 waiting_time = 0;
             end 
+        end
+        
+        function waiting_list = calculate_wait_time_right(obj, t)
+            waiting_list = []; 
+            length = size(obj.queue_right, 2); 
+            if length > 0
+                for i = 1:1:length
+                    car = obj.queue_right(i); 
+                    waiting_list = [waiting_list (t - car.time_of_arrival)]; 
+                end
+            end
+        end
+        
+        function waiting_list = calculate_wait_time_left(obj, t)
+            waiting_list = []; 
+            length = size(obj.queue_left, 2); 
+            if length > 0
+                for i = 1:1:length
+                    car = obj.queue_left(i); 
+                    waiting_list = [waiting_list (t - car.time_of_arrival)]; 
+                end
+            end
         end
     end
     
