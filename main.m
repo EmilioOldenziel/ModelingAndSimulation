@@ -1,2 +1,2 @@
-gr = traffic_light_grid(3); 
+gr = traffic_light_grid(10); 
 gr = gr.run(); 

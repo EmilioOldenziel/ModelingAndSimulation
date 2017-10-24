@@ -6,8 +6,9 @@ classdef traffic_light_grid
       grid_size
       grid = {}
       cars_to_enqueue = []
-      enqueue_rate = 10;
+      enqueue_rate = 1;
       grid_amount_of_cars = {};
+      simsec = 100;
     end
     
     methods
@@ -21,21 +22,28 @@ classdef traffic_light_grid
         end
         
         function obj = run(obj)
-            for t=0:1:100
-                %each round enqueue_rate cars are enqueued 
-                for i=1:1:obj.enqueue_rate
-                    obj.cars_to_enqueue = [obj.cars_to_enqueue car(obj.grid_size, t)];
+
+            %obj.cars_to_enqueue = [car(obj.grid_size, 0)];
+            for t=0:1:obj.simsec
+                
+                amount_of_cars = abs(int16((sin(t/obj.simsec*pi*3))*10.0));
+                %add no more cars after half a sinus
+                if t > obj.simsec/3 
+                    amount_of_cars = 0;
                 end
+     
+                
+                % each round enqueue_rate cars are enqueued 
+               for i=1:1:amount_of_cars
+                    obj.cars_to_enqueue = [obj.cars_to_enqueue car(obj.grid_size, t)];
+               end
                 for i=1:1:length(obj.cars_to_enqueue)
                     cur_car = obj.cars_to_enqueue(i);
                     if cur_car.pos_cur{1,1} <= obj.grid_size && cur_car.pos_cur{1,1} > 0 && cur_car.pos_cur{1,2} <= obj.grid_size && cur_car.pos_cur{1,2} > 0 
                         x = cur_car.pos_cur{1, 1};
                         y = cur_car.pos_cur{1, 2};
-                        obj.grid{x,y} = obj.grid{x,y}.enqueue_car(cur_car, t);
-                    else 
-                       
-                    end    
-                       
+                        obj.grid{x,y} = obj.grid{x,y}.enqueue_car(cur_car, t);                       
+                    end         
                 end
                 obj.cars_to_enqueue = [];
                 %for each traffic light return the cars that have been
@@ -47,7 +55,6 @@ classdef traffic_light_grid
                         obj.grid{i,j}.enqueue_list = [];
                     end
                 end
-                
                 obj.grid_amount_of_cars = {};
                 for i=1:1:obj.grid_size
                     for j=1:1:obj.grid_size
@@ -78,7 +85,6 @@ classdef traffic_light_grid
                     end
                 end
                 
-                
               Z = {};
               for i=1:1:obj.grid_size
                 for j=1:1:obj.grid_size
@@ -100,7 +106,8 @@ classdef traffic_light_grid
                plot_intersection(obj.grid{i,j}, 100);
              end
 
-            end
+           end
+            
         end
     end
 end

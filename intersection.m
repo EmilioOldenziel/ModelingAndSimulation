@@ -127,7 +127,6 @@ classdef intersection
                         case 2 % east-west straight and right light
                             obj.east = obj.east.green_right();
                             if obj.car_lock_1 == 0
-
                                 [car, obj.east] = obj.east.dequeue_right(i); %next car drives away
                                 if ~isempty(car)
                                     obj.enqueue_list = [obj.enqueue_list car]; 

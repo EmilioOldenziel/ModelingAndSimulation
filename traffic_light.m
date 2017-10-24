@@ -33,6 +33,7 @@ classdef traffic_light
             if(~isempty(obj.queue_left) && obj.state == 2)
                 car = obj.queue_left(1);
                 obj.queue_right = obj.queue_left(2:1:end);
+                obj.cars_passed = obj.cars_passed + 1;
                 %update the car to new destination
                 car.direction_in = mod(car.direction_out + 2, 4);
                
@@ -68,7 +69,6 @@ classdef traffic_light
                 car.time_of_passing = time_now;
                 %set traffic light values
                 if  ~isempty(car)
-                    obj.cars_passed = obj.cars_passed + 1;
                     obj.wait_times = horzcat(obj.wait_times, (car.time_of_passing - car.time_of_arrival));
                     car.time_of_arrival = time_now;
                 end
@@ -121,7 +121,8 @@ classdef traffic_light
                     obj.wait_times = horzcat(obj.wait_times, (car.time_of_passing - car.time_of_arrival));
                     car.time_of_arrival = time_now;
                 end
-                if car.pos_cur{1,1} ~= car.pos_out{1,1} && car.pos_cur{1,2} ~= car.pos_out{1,2} 
+                if car.pos_cur{1,1} == car.pos_out{1,1} && car.pos_cur{1,2} == car.pos_out{1,2} 
+                    disp('car arrived at destination')
                     car = [];
                 else
                     car = [car];
