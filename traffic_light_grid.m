@@ -97,7 +97,7 @@ classdef traffic_light_grid
               title('Amount of Cars');
               title(['Amount of cars at t=', num2str(t)]);
               drawnow;
-              saveas(gcf,['frames/' num2str(t) '.jpg']);
+              %saveas(gcf,['frames/' num2str(t) '.jpg']);
             end
                
             
