@@ -108,7 +108,7 @@ classdef traffic_light_grid
               alpha(.5)
               title('Amount of Cars')
               title(['Amount of cars at t=', num2str(t)]);
-              drawnow;
+              saveas(gcf, ['frames/' num2str(t) '.jpg'])
               
               iter_waiting_time = []; 
               for i=1:1:obj.grid_size
@@ -142,13 +142,17 @@ classdef traffic_light_grid
                 y = obj.amount_of_cars; 
                 subplot(3,1,1)
                 plot(x, y);
-                title('Card added'); 
+                title('Cars added'); 
+                ylabel('Cars');
+                xlabel('Simulation seconds (s)');
                 drawnow;
                 
                 y = obj.list_avg_waiting_time;
                 subplot(3,1,2)
                 plot(x, y);
-                title('Average waiting time of a car'); 
+                title('Average waiting time of a car');
+                ylabel('Seconds (s)');
+                xlabel('simulation seconds (s)');
                 drawnow;
 
                 y = obj.longest_waiting;
@@ -157,6 +161,8 @@ classdef traffic_light_grid
                 length(y)
                 plot(x, y);
                 title('Max waiting time per round'); 
+                ylabel('Seconds (s)');
+                xlabel('Simulation seconds (s)');
                 drawnow;
                 
         end
