@@ -32,11 +32,13 @@ classdef traffic_light
         function [car, obj] = dequeue_left(obj, time_now)
             if(~isempty(obj.queue_left) && obj.state == 2)
                 car = obj.queue_left(1);
-                obj.queue_right = obj.queue_left(2:1:end);
+                obj.queue_left = obj.queue_left(2:1:end);
                 obj.cars_passed = obj.cars_passed + 1;
                 %update the car to new destination
-                car.direction_in = mod(car.direction_out + 2, 4);
-               
+                car.direction_in = mod((car.direction_out + 1), 4);
+                if(car.direction_out == 0) 
+                    car.direction_out = 4; 
+                end
                 switch car.direction_out 
                     case 1
                         car.pos_cur{1,2} = car.pos_cur{1,2}-1;
@@ -65,7 +67,6 @@ classdef traffic_light
                         end
                     end
                 end
-                
                 car.time_of_passing = time_now;
                 %set traffic light values
                 if  ~isempty(car)
@@ -84,7 +85,9 @@ classdef traffic_light
                 obj.queue_right = obj.queue_right(2:1:end);
                 %update the car to new destination
                 car.direction_in = mod(car.direction_out + 2, 4);
-                
+                if(car.direction_out == 0) 
+                    car.direction_out = 4; 
+                end
                 switch car.direction_out 
                     case 1
                         car.pos_cur{1,2} = car.pos_cur{1,2}-1;
@@ -122,14 +125,14 @@ classdef traffic_light
                     car.time_of_arrival = time_now;
                 end
                 if car.pos_cur{1,1} == car.pos_out{1,1} && car.pos_cur{1,2} == car.pos_out{1,2} 
-                    disp('car arrived at destination')
+                    disp('car arrived at destination');
                     car = [];
                 else
                     car = [car];
                 end
             else
                 car = [];
-            end   
+            end
         end
         
         function obj = green_left(obj)

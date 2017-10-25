@@ -145,7 +145,7 @@ classdef intersection
                         case 3 % north-south left light
                             obj.north = obj.north.green_left();
                             if obj.car_lock_1 == 0
-                                [car, obj.north] = obj.north.dequeue_right(i); %next car drives away
+                                [car, obj.north] = obj.north.dequeue_left(i); %next car drives away
                                 if ~isempty(car)
                                     obj.enqueue_list = [obj.enqueue_list car]; 
                                     obj.car_lock_1 = randi(4);
@@ -180,7 +180,7 @@ classdef intersection
                             end
                     end
                 end
-                
+            
                 %disp(['amount of cars waiting => ','north: ' , num2str(size(obj.north.queue, 2)), ' east: ', num2str(size(obj.east.queue, 2)), ' south: ', num2str(size(obj.south.queue, 2)) ,' west: ', num2str(size(obj.west.queue, 2))])
                 obj.list_avg_waiting_time = horzcat(obj.list_avg_waiting_time, mean([obj.east.wait_times obj.south.wait_times obj.west.wait_times obj.north.wait_times]));  
                 obj.size_of_queue_north_right = horzcat(obj.size_of_queue_north_right, size(obj.north.queue_right, 2));
