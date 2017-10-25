@@ -187,5 +187,31 @@ classdef traffic_light
                 waiting_time = 0;
             end 
         end
+        
+        function waiting_list = calculate_wait_time_right(obj, t)
+            waiting_list = []; 
+            length = size(obj.queue_right, 2); 
+            if length > 0
+                for i = 1:1:length
+                    car = obj.queue_right(i); 
+                    waiting_list = [waiting_list (t - car.time_of_arrival)]; 
+                end
+            else 
+                waiting_list = [0];
+            end
+        end
+        
+        function waiting_list = calculate_wait_time_left(obj, t)
+            waiting_list = []; 
+            length = size(obj.queue_left, 2); 
+            if length > 0
+                for i = 1:1:length
+                    car = obj.queue_left(i); 
+                    waiting_list = [waiting_list (t - car.time_of_arrival)]; 
+                end
+            else 
+                waiting_list = [0];
+            end
+        end
     end
 end

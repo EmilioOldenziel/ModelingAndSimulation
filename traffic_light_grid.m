@@ -3,38 +3,62 @@ classdef traffic_light_grid
     %   Detailed explanation goes here
     
     properties
+      input_type
+      green_mode;
+      lock_mode;
       grid_size
       grid = {}
       cars_to_enqueue = []
       enqueue_rate = 1;
       grid_amount_of_cars = {};
-      simsec = 100;
+      simsec;
+      amount_of_cars = [];
+      list_avg_waiting_time = []; 
+      longest_waiting = []; 
     end
     
     methods
-        function obj = traffic_light_grid(size)
-            obj.grid_size = size; 
+        function obj = traffic_light_grid(simsec,  input_type, size, green_mode, lock_mode)
+            obj.simsec = simsec; 
+            obj.grid_size = size;
+            obj.input_type = input_type; 
+            obj.green_mode = green_mode;
+            obj.lock_mode = lock_mode;
             for i = 1:1:obj.grid_size
                 for j = 1:1:obj.grid_size
-                    obj.grid{i,j} = intersection();
+                    obj.grid{i,j} = intersection(obj.green_mode, obj.lock_mode);
                 end
             end
         end
         
         function obj = run(obj)
-
-           % obj.cars_to_enqueue = [car(obj.grid_size, 0)];
-           
             for t=0:1:obj.simsec
-                
-                amount_of_cars = abs(int16((sin(t/obj.simsec*pi*3))*10.0));
-                %add no more cars after half a sinus
-                if t > obj.simsec/10
-                    amount_of_cars = 0;
+                obj.input_type
+                %select amount of cars based on input type
+                switch obj.input_type
+                    case 1 
+                        %settings for an constant input
+                        amount_added=obj.grid_size; 
+                    case 2
+                        %settings for a rush hour situation
+                        amount_added = abs(int16((sin(t/obj.simsec*pi*10))*10.0)); 
+                        %add no more cars after half a sinus
+                        if t > obj.simsec/10
+                            amount_added= 0;
+                        end
+                    otherwise
+                        %settings for constant peaks
+                        if mod(t, 5) == 0
+                            amount_added = obj.grid_size;
+                        else 
+                            amount_added = 0;
+                        end
                 end
                 
+               obj.amount_of_cars = [obj.amount_of_cars amount_added]; 
+
                 % each round enqueue_rate cars are enqueued 
-               for i=1:1:amount_of_cars
+               for i=1:1:amount_added
                     obj.cars_to_enqueue = [obj.cars_to_enqueue car(obj.grid_size, t)];
                end
           
@@ -72,20 +96,7 @@ classdef traffic_light_grid
                         obj.grid_amount_of_cars{i, j} = x; 
                     end
                 end
-                
-                for i=1:1:obj.grid_size
-                    for j=1:1:obj.grid_size
-                        if obj.grid{i,j}.car_lock_1 > 0
-                            obj.grid{i,j}.car_lock_1 = obj.grid{i,j}.car_lock_1 - 1;
-                        end
-                        if obj.grid{i,j}.car_lock_2  > 0 
-                            obj.grid{i,j}.car_lock_2 = obj.grid{i,j}.car_lock_2 - 1;
-                        end 
-                        if obj.grid{i,j}.lock > 0
-                            obj.grid{i,j}.lock = obj.grid{i,j}.lock - 1;
-                        end   
-                    end
-                end
+               
                 
               Z = {};
               for i=1:1:obj.grid_size
@@ -98,17 +109,56 @@ classdef traffic_light_grid
               title('Amount of Cars')
               title(['Amount of cars at t=', num2str(t)]);
               drawnow;
-              pause(0.01)
-            end
+              
+              iter_waiting_time = []; 
+              for i=1:1:obj.grid_size
+                for j=1:1:obj.grid_size
+                    iter_waiting_time = [iter_waiting_time, mean([...
+                            obj.grid{i,j}.north.calculate_wait_time_right(t),obj.grid{i,j}.north.calculate_wait_time_left(t),...
+                            obj.grid{i,j}.east.calculate_wait_time_right(t), obj.grid{i,j}.east.calculate_wait_time_left(t),...
+                            obj.grid{i,j}.south.calculate_wait_time_right(t),obj.grid{i,j}.south.calculate_wait_time_left(t),...
+                            obj.grid{i,j}.west.calculate_wait_time_right(t), obj.grid{i,j}.west.calculate_wait_time_left(t)])];
+                end
+              end
+              obj.list_avg_waiting_time = horzcat(obj.list_avg_waiting_time, mean(iter_waiting_time)); 
             
-             % plot each intersection in the grid 
-           for i=1:1:obj.grid_size
-            for j=1:1:obj.grid_size
-               plot_intersection(obj.grid{i,j}, 100);
-               title(['Position ', num2str(i), num2str(j)]);
-
+              waiting_longest = []; 
+              for i=1:1:obj.grid_size
+                for j=1:1:obj.grid_size
+                    waiting_longest = [waiting_longest max([...
+                            obj.grid{i,j}.north.get_longest_waiting_time_right(t), obj.grid{i,j}.north.get_longest_waiting_time_left(t),...
+                            obj.grid{i,j}.east.get_longest_waiting_time_right(t), obj.grid{i,j}.east.get_longest_waiting_time_left(t),...
+                            obj.grid{i,j}.south.get_longest_waiting_time_right(t),obj.grid{i,j}.south.get_longest_waiting_time_left(t),...
+                            obj.grid{i,j}.west.get_longest_waiting_time_right(t), obj.grid{i,j}.west.get_longest_waiting_time_left(t)])];
+                end
+              end
+              obj.longest_waiting = horzcat(obj.longest_waiting, max(waiting_longest)); 
+              
+              
             end
-           end
+            x = (0:1:obj.simsec);
+
+            figure 
+                y = obj.amount_of_cars; 
+                subplot(3,1,1)
+                plot(x, y);
+                title('Card added'); 
+                drawnow;
+                
+                y = obj.list_avg_waiting_time;
+                subplot(3,1,2)
+                plot(x, y);
+                title('Average waiting time of a car'); 
+                drawnow;
+
+                y = obj.longest_waiting;
+                subplot(3,1,3)
+                length(x)
+                length(y)
+                plot(x, y);
+                title('Max waiting time per round'); 
+                drawnow;
+                
         end
     end
 end
