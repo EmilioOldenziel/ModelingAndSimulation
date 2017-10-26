@@ -142,7 +142,7 @@ classdef traffic_light_grid
                 y = obj.amount_of_cars; 
                 subplot(3,1,1)
                 plot(x, y);
-                title('Cars added'); 
+                title('Cars added in each second'); 
                 ylabel('Cars');
                 xlabel('Simulation seconds (s)');
                 drawnow;
